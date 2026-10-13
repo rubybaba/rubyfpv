@@ -1,0 +1,17 @@
+{
+  "name": "rubyfpv",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:preview": "node scripts/build.mjs --drafts",
+    "dev": "node scripts/dev.mjs",
+    "test": "node --test tests/blog.test.mjs"
+  },
+  "engines": { "node": ">=22" },
+  "dependencies": {
+    "yaml": "2.9.1",
+    "markdown-it": "14.3.2"
+  }
+}
