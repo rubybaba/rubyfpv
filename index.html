@@ -355,6 +355,20 @@ html.rv .media[data-rv].in .screen { transform: none; }
 
 /* ---------- Footer ---------- */
 .foot { padding-top: 72px; padding-bottom: calc(26px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); }
+.contact { display: flex; flex-wrap: wrap; justify-content: center; align-items: stretch; gap: 4px; margin-bottom: 64px; }
+.contact-link { display: inline-flex; flex-wrap: wrap; justify-content: center; align-items: stretch; gap: 4px; color: inherit; text-decoration: none; min-width: 0; }
+.c-pill { display: inline-flex; align-items: center; font-size: calc(clamp(34px, 5vw, 72px) * var(--d-scale)); line-height: 1; padding: .16em .44em .2em; border-radius: 999px; background: var(--rose-pastel); transition: background .6s var(--ease), color .6s var(--ease); }
+.c-mail { display: inline-flex; align-items: center; min-width: 0; overflow-wrap: anywhere; font-family: var(--f-mono); font-size: clamp(14px, 1.5vw, 19px); padding: 0 22px; border-radius: 4px; background: var(--chip); transition: background .6s var(--ease), color .6s var(--ease); }
+.contact-link .c-go { width: auto; height: auto; aspect-ratio: 1; min-width: 56px; }
+.contact-link .c-go svg { width: 18px; height: 18px; transition: transform .6s var(--ease); }
+.contact-link:hover .c-pill, .contact-link:hover .c-go { background: var(--ink); color: var(--bg); }
+.contact-link:hover .c-mail { background: var(--rose-pastel); }
+.contact-link:hover .c-go svg { transform: translateX(3px); }
+.c-copy { font-family: var(--f-mono); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink); padding: 0 18px; min-height: 56px; border: 0; border-radius: 999px; background: var(--chip); cursor: pointer; transition: background .6s var(--ease), color .6s var(--ease); }
+.c-copy:hover { background: var(--ink); color: var(--bg); }
+.contact-link:focus-visible, .c-copy:focus-visible { outline: 2px solid var(--rose); outline-offset: 3px; }
+.foot-bar a { text-decoration: underline; text-underline-offset: 3px; }
+.foot-bar > :last-child a { text-decoration: none; }
 .builder { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
 .word { position: relative; overflow: hidden; font-family: var(--f-display); font-weight: var(--d-weight); letter-spacing: var(--d-track); font-size: calc(clamp(24px, 2.8vw, 38px) * var(--d-scale)); line-height: 1; padding: .2em .32em .24em; background: var(--chip); transition: background .6s var(--ease), color .6s var(--ease), border-radius .6s var(--ease); }
 .word:nth-child(odd) { border-radius: 999px; } .word:nth-child(even) { border-radius: 4px; }
@@ -485,7 +499,7 @@ html.rv .media[data-rv].in .screen { transform: none; }
     </div>
     <div class="hero-foot">
       <span class="typed" data-type="Experiments, posted daily-ish" data-at="1300"></span>
-      <span class="hello"><span class="hi" id="hi" aria-live="off"><span>Hi</span></span><button class="mail" type="button" id="mailChip" data-sfx="btn" title="Copy email">hello@rubyfpv.com</button></span>
+      <span class="hello"><span class="hi" id="hi" aria-live="off"><span>Hi</span></span><button class="mail" type="button" id="mailChip" data-sfx="btn" title="Copy email">rubyfpv88@gmail.com</button></span>
     </div>
   </section>
 
@@ -693,11 +707,19 @@ html.rv .media[data-rv].in .screen { transform: none; }
 
 <footer class="foot" data-section="connect">
   <div class="wrap">
+    <div class="contact" data-rv>
+      <a class="contact-link" href="mailto:rubyfpv88@gmail.com" data-sfx="btn" aria-label="Contact me by email: rubyfpv88@gmail.com">
+        <span class="c-pill display">Contact me</span>
+        <span class="c-mail" id="contactMail">rubyfpv88@gmail.com</span>
+        <span class="arrow-sq c-go" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M1 6h9M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></span>
+      </a>
+      <button type="button" class="c-copy" id="copyMail" data-sfx="btn">Copy</button>
+    </div>
     <div class="builder" id="builder" aria-label="Rubyfpv is the curious first-person AI playground" data-rv></div>
     <p class="builder-hint mono">Click any word to rewrite the sentence.</p>
     <div class="foot-bar">
       <span>©2026 Rubyfpv · Quantity breeds quality</span>
-      <span>Enquiries: DM @rubyfpv</span>
+      <span>Contact: <a href="mailto:rubyfpv88@gmail.com">rubyfpv88@gmail.com</a></span>
       <span><a href="#" data-todo class="rh"><span data-roll>Xiaohongshu</span></a><a href="#" data-todo class="rh"><span data-roll>YouTube</span></a><a href="#" data-todo class="rh"><span data-roll>Instagram</span></a><a href="#" data-todo class="rh"><span data-roll>X</span></a></span>
     </div>
   </div>
@@ -1292,11 +1314,12 @@ html.rv .media[data-rv].in .screen { transform: none; }
   /* ================= Toast, copy, placeholder links ================= */
   var tt, dragMoved = false;
   function toast(m) { var o = document.querySelector('.toast'); if (o) o.remove(); var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = m; document.body.appendChild(t); clearTimeout(tt); tt = setTimeout(function () { t.remove(); }, 2000); }
-  function copy(text, el) {
+  function copy(text, el, msg) {
     var p = navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(text) : Promise.reject();
-    p.then(function () { toast('Copied. Go try it.'); }, function () { var r = document.createRange(); r.selectNodeContents(el); var s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Selected. Press Cmd+C to copy.'); });
+    p.then(function () { toast(msg || 'Copied. Go try it.'); }, function () { var r = document.createRange(); r.selectNodeContents(el); var s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Selected. Press Cmd+C to copy.'); });
   }
-  document.getElementById('mailChip').addEventListener('click', function () { copy('hello@rubyfpv.com', this); });
+  document.getElementById('mailChip').addEventListener('click', function () { copy('rubyfpv88@gmail.com', this, 'Email copied.'); });
+  document.getElementById('copyMail').addEventListener('click', function () { copy('rubyfpv88@gmail.com', document.getElementById('contactMail'), 'Email copied.'); });
   document.querySelectorAll('[data-todo]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); if (dragMoved) return; toast('Link coming soon'); }); });
 
   /* ================= Sticker pile (Matter.js physics) ================= */
