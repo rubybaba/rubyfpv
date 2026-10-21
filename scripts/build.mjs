@@ -52,6 +52,7 @@ export async function build({ includeDrafts = false, output = join(root, 'dist')
     await writeFile(file, content);
   };
   await cp(join(root, 'index.html'), join(staging, 'index.html'));
+  await cp(join(root, 'assets'), join(staging, 'assets'), { recursive: true });
   await cp(join(root, 'blog'), join(staging, 'blog'), { recursive: true });
   await cp(join(root, 'content/assets'), join(staging, 'blog/media'), { recursive: true });
   if (includeDrafts) await cp(join(root, 'content/preview-assets'), join(staging, 'blog/media/preview'), { recursive: true });
